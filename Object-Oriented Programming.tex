@@ -1,0 +1,49 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepgfmodule{oo}
+\begin{document}
+\pgfooclass{stamp}{
+    % This is the class stamp
+    \method stamp() { 
+        % The constructor
+    }
+    \method apply(#1,#2,#3) { % Causes the stamp to be shown at coordinate (#1,#2)
+        % Draw the stamp:
+        \node [rotate=20,font=\huge] at (#1,#2) {#3};
+    }
+}
+
+\pgfooclass{demo}{
+    % This is the class stamp
+    \attribute text;
+    \attribute rotation angle = 20;
+    \method demo(#1) {
+        \pgfooset{text}{#1} % Set the text
+    }
+    \method apply(#1,#2) {
+        \pgfoothis.shift origin(#1,#2)
+        % Draw the stamp:
+        \node [rotate=\pgfoovalueof{rotation angle},font=\huge]{\pgfoovalueof{text}};
+    }
+    \method shift origin(#1,#2) { \tikzset{xshift=#1,yshift=#2} }
+    \method set rotation (#1) {
+    \pgfooset{rotation angle}{#1}
+    }
+}
+
+\pgfoonew \mystamp=new stamp()
+\begin{tikzpicture}
+\mystamp.apply(1,2,Passed)
+\mystamp.apply(3,4,Nice)
+\end{tikzpicture}
+
+% Create a new object:
+\pgfoonew \mydemo=new demo()
+\begin{tikzpicture}
+% Get the object's id and store it in \myid:
+\mydemo.get id(\myid)
+% The following two calls have the same effect:
+\mydemo.apply(1,1)
+\pgfooobj{\myid}.apply(1,1)
+\end{tikzpicture}
+\end{document}
