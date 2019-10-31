@@ -1,0 +1,91 @@
+\documentclass{article}
+\usepackage{tikz}
+\begin{document}
+Inside the current text we place two pictures, containing nodes named \texttt{n1} and \texttt{n2}, using
+
+\verb|\tikz[remember picture] \node[circle,fill=red!50] (n1) {};|
+
+which yields \tikz[remember picture] \node[circle,fill=red!50] (n1) {}; , and
+
+\verb|\tikz[remember picture] \node[fill=blue!50] (n2) {};|
+
+yielding the code \tikz[remember picture] \node[fill=blue!50] (n2) {};. To connect these codes, we create another picture using the overlay option and also the \texttt{remember picture} option.
+
+\begin{center}
+\begin{verbatim}
+\begin{tikzpicture}[remember picture,overlay]
+\draw[->,very thick] (n1) -- (n2);
+\end{tikzpicture}
+\end{verbatim}
+\end{center}
+
+\begin{tikzpicture}[remember picture,overlay]
+\draw[->,very thick] (n1) -- (n2);
+\end{tikzpicture}
+
+Note that the last picture is seemingly empty. What happens is that it has zero size and contains an arrow
+that lies well outside its bounds. As a last example, we connect a node in another picture to the first two
+nodes. Here, we provide the \texttt{overlay} option only with the line that we do not wish to count as part of the
+picture.
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{0.4\linewidth}
+\begin{tikzpicture}[remember picture]
+\node (c) [circle,draw] {Big circle};
+\draw [overlay,->,very thick,red,opacity=.5]
+(c) to[bend left] (n1) (n1) -| (n2);
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.5\linewidth}
+\begin{verbatim}
+\begin{tikzpicture}[remember picture]
+\node (c) [circle,draw] {Big circle};
+\draw [overlay,->,very thick,red,opacity=.5]
+(c) to[bend left] (n1) (n1) -| (n2);
+\end{tikzpicture}
+\end{verbatim}
+\end{minipage}
+\end{figure}
+
+\clearpage
+There is a special node called current page that can be used to access the \texttt{current page}. It is a node of shape rectangle whose \texttt{south west} anchor is the lower left corner of the page and whose north east anchor is the upper right corner of the page. While this node is handled in a special way internally, you can reference it as if it were defined in some remembered picture other than the current one. Thus, by giving the \texttt{remember picture} and the \texttt{overlay} options to a picture, you can position nodes \textit{absolutely} on a page.
+The first example places some text in the lower left corner of the current page:
+
+\begin{verbatim}
+\begin{tikzpicture}[remember picture,overlay]
+\node [xshift=1cm,yshift=1cm] at (current page.south west)
+[text width=7cm,fill=red!20,rounded corners,above right]
+{
+This is an absolutely positioned text in the
+lower left corner. No shipout-hackery is used.
+};
+\end{tikzpicture}
+\end{verbatim}
+\begin{tikzpicture}[remember picture,overlay]
+\node [xshift=1cm,yshift=1cm] at (current page.south west)
+[text width=7cm,fill=red!20,rounded corners,above right]
+{
+This is an absolutely positioned text in the
+lower left corner. No shipout-hackery is used.
+};
+\end{tikzpicture}
+
+The next example adds a circle in the middle of the page.
+\begin{verbatim}
+\begin{tikzpicture}[remember picture,overlay]
+\draw [line width=1mm,opacity=.25]
+(current page.center) circle (3cm);
+\end{tikzpicture}
+\end{verbatim}
+\begin{tikzpicture}[remember picture,overlay]
+\draw [line width=1mm,opacity=.25]
+(current page.center) circle (3cm);
+\end{tikzpicture}
+
+The final example overlays some text over the page (depending on where this example is found on the page, the text may also be behind the page).
+\begin{tikzpicture}[remember picture,overlay]
+\node [rotate=60,scale=10,text opacity=0.2]
+at (current page.center) {Example};
+\end{tikzpicture}
+\end{document}
