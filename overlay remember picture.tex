@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage{tikz}
+\begin{document}
+Inside the current text we place two pictures, containing nodes named \texttt{n1} and \texttt{n2}, using
+
+\verb|\tikz[remember picture] \node[circle,fill=red!50] (n1) {};|
+
+which yields \tikz[remember picture] \node[circle,fill=red!50] (n1) {}; , and
+
+\verb|\tikz[remember picture] \node[fill=blue!50] (n2) {};|
+
+yielding the code \tikz[remember picture] \node[fill=blue!50] (n2) {};. To connect these codes, we create another picture using the overlay option and also the \texttt{remember picture} option.
+
+\begin{verbatim}
+\begin{tikzpicture}[remember picture,overlay]
+\draw[->,very thick] (n1) -- (n2);
+\end{tikzpicture}
+\end{verbatim}
+
+Note that the last picture is seemingly empty. What happens is that it has zero size and contains an arrow
+that lies well outside its bounds. As a last example, we connect a node in another picture to the first two
+nodes. Here, we provide the \texttt{overlay} option only with the line that we do not wish to count as part of the
+picture.
+\begin{tikzpicture}[overlay,remember picture]
+\node (c) [circle,draw] {Big circle};
+\draw [->,very thick,red,opacity=.5]
+(c) to[bend left] (n1) (n1) -| (n2);
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture]
+\node (c) [circle,draw] {Big circle};
+\draw [overlay,->,very thick,red,opacity=.5]
+(c) to[bend left] (n1) (n1) -| (n2);
+\end{tikzpicture}
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{0.4\linewidth}
+\begin{tikzpicture}[remember picture]
+\node (c) [circle,draw] {Big circle};
+\draw [overlay,->,very thick,red,opacity=.5]
+(c) to[bend left] (n1) (n1) -| (n2);
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.5\linewidth}
+\begin{verbatim}
+\begin{tikzpicture}[remember picture]
+\node (c) [circle,draw] {Big circle};
+\draw [overlay,->,very thick,red,opacity=.5]
+(c) to[bend left] (n1) (n1) -| (n2);
+\end{tikzpicture}
+\end{verbatim}
+\end{minipage}
+\end{figure}
+\end{document}
